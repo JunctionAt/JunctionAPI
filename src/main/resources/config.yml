@@ -1,0 +1,6 @@
+api-url: https://junction.at/api
+api-key: SetMe
+
+server-revision-id: SetMe
+
+rabbitmq-host: localhost

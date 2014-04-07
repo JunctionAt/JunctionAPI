@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="scala-minecraft-plugin-api_2.10-0.3.2.jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/scala-minecraft-plugin-api_2.10-0.3.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
