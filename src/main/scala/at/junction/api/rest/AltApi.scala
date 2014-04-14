@@ -11,7 +11,7 @@ import scala.throws
  */
 class AltApi(api: RestApi) extends JsonFields {
 
-  class Alt(alt: String, last_login: String)
+  case class Alt(alt: String, last_login: String)
 
   @throws(classOf[api.ApiError])
   def getAlts(username: String): List[Alt] = {

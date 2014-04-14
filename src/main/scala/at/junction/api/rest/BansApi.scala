@@ -15,10 +15,10 @@ class BansApi(api: RestApi) extends JsonFields {
   }
   import BanStatus._
 
-  class Ban(id: Integer, issuer: String, username: String, reason: String, server: String,
+  case class Ban(id: Integer, issuer: String, username: String, reason: String, server: String,
             time: Date = null, active: Boolean, remove_time: Date = null, remove_user: String, source: String)
 
-  class Note(id: Integer, issuer: String, username: String, server: String,
+  case class Note(id: Integer, issuer: String, username: String, server: String,
              time: Date = null, active: Boolean, note: String)
 
   def getBans(username: String, active: BanStatus) = {
