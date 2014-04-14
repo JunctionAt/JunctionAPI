@@ -4,3 +4,6 @@ api-key: SetMe
 server-revision-id: SetMe
 
 rabbitmq-host: localhost
+rabbitmq-exchange: jmc-bus
+
+bus-debug: True

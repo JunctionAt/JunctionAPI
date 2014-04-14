@@ -20,4 +20,4 @@ libraryDependencies ++= Seq(
 
 assemblySettings
 
-assemblyOption in assembly ~= { _.copy(includeScala = false) }
+//assemblyOption in assembly ~= { _.copy(includeScala = false) }

@@ -37,7 +37,13 @@ class Main extends ScalaPlugin with ListenersPlugin {
       serverId)
 
     registerEvents()
-    messageBus = new Bus(new BusOptions("localhost", "test", serverId), actorSystem, this.pluginManager)
+    messageBus = new Bus(
+      new BusOptions(
+        getConfig.getString("rabbitmq-host"),
+        getConfig.getString("rabbitmq-exchange"),
+        serverId,
+        getConfig.getBoolean("bus-debug")),
+      actorSystem, this.pluginManager)
   }
 
   override def onDisable = {
@@ -48,13 +54,12 @@ class Main extends ScalaPlugin with ListenersPlugin {
   def registerEvents() = {
     PlayerJoinBusEventMarshaller.register()
     PlayerQuitBusEventMarshaller.register()
+    PlayerChatBusEventMarshaller.register()
   }
 
   def listeners: List[Listener] = List(
     OnPlayerJoin{ (player, event) => messageBus.publish(PlayerJoinBusEvent(player)) },
     OnPlayerQuit{ (player, event) => messageBus.publish(PlayerQuitBusEvent(player)) },
-    new Listener {
-      @EventHandler def on(e: PlayerJoinBusEvent) = println("YEEE: " + e.player.name)
-    }
+    OnAsyncPlayerChat{ (player, event) => messageBus.publish(PlayerChatBusEvent(player, event.getMessage)) }
   )
 }

@@ -55,4 +55,16 @@ trait EventMarshaller {
   def register()
 }
 
+abstract class SimpleEventMarshaller[T  <: BusEvent : Manifest](identifier: String) extends EventMarshaller {
+  def serialize(input: BusEvent): JValue = {
+    Extraction.decompose(input.asInstanceOf[T])
+  }
+
+  def deserialize(input: JValue): BusEvent = {
+    input.extract[T]
+  }
+
+  def register() = BusEvents.types += identifier -> this
+}
+
 case class NoSuchTypeException(event_type: String) extends Exception

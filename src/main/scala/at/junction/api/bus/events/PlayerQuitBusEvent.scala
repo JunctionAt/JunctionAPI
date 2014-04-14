@@ -1,9 +1,7 @@
 package at.junction.api.bus.events
 
-import at.junction.api.bus.{BusEvents, EventMarshaller, BusEventObject, BusEvent}
+import at.junction.api.bus._
 import org.bukkit.event.HandlerList
-import org.json4s._
-import java.util.UUID
 import org.bukkit.entity.Player
 import at.junction.api.bus.fields.PlayerState
 
@@ -20,15 +18,4 @@ object PlayerQuitBusEvent extends BusEventObject {
   }
 }
 
-object PlayerQuitBusEventMarshaller extends EventMarshaller {
-
-  def serialize(input: BusEvent): JValue = {
-    Extraction.decompose(input.asInstanceOf[PlayerQuitBusEvent])
-  }
-
-  def deserialize(input: JValue): BusEvent = {
-    input.extract[PlayerQuitBusEvent]
-  }
-
-  def register() = BusEvents.types += PlayerQuitBusEvent.eventIdentifier -> PlayerQuitBusEventMarshaller
-}
+object PlayerQuitBusEventMarshaller extends SimpleEventMarshaller[PlayerQuitBusEvent](PlayerQuitBusEvent.eventIdentifier) {}

@@ -7,8 +7,7 @@ import org.bukkit.event.block.{BlockBreakEvent, BlockDamageEvent}
 import org.bukkit.event.block.Action._
 import org.bukkit.event.entity.{EntityDamageEvent, PlayerDeathEvent, EntityDamageByEntityEvent}
 import org.bukkit.event.weather.WeatherChangeEvent
-import org.bukkit.event.player.{PlayerQuitEvent, PlayerInteractEvent, PlayerMoveEvent, PlayerChatEvent,
-                                PlayerJoinEvent, PlayerKickEvent, PlayerLoginEvent, PlayerEvent}
+import org.bukkit.event.player._
 
 /**
  * A trait that supports exactly one listener.
@@ -92,6 +91,9 @@ trait Listeners extends BukkitEnrichment {
   }
   def OnPlayerChat(f: (Player, PlayerChatEvent) => Unit) = new Listener {
     @EH def on(e:PlayerChatEvent): Unit     = f(e.getPlayer, e)
+  }
+  def OnAsyncPlayerChat(f: (Player, AsyncPlayerChatEvent) => Unit) = new Listener {
+    @EH def on(e:AsyncPlayerChatEvent): Unit     = f(e.getPlayer, e)
   }
   def OnBlockBreak(f: (Block, Player, BlockBreakEvent) => Unit) = new Listener {
     @EH def on(e:BlockBreakEvent): Unit     = f(e.getBlock, e.getPlayer, e)

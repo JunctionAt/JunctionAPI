@@ -16,32 +16,30 @@ import org.bukkit.plugin.PluginManager
  * Time: 5:06 PM
  */
 
-case class BusOptions(host: String, exchange: String, source: String)
+case class BusOptions(host: String, exchange: String, source: String, debug: Boolean)
 
 class Bus(busOptions: BusOptions, actorSystem: ActorSystem, pm: PluginManager) {
-
-  final val exchange_name = "jmc-bus"
 
   val config: Config = new Config()
     .withRecoveryPolicy(RecoveryPolicies.recoverAlways())
     .withRetryPolicy(new RetryPolicy()
       .withBackoff(Duration.seconds(1), Duration.seconds(30)))
-  val options: ConnectionOptions = new ConnectionOptions().withHost("localhost")
+  val options: ConnectionOptions = new ConnectionOptions().withHost(busOptions.host)
 
   val connection: Connection = Connections.create(options, config)
   val channel: Channel = connection.createChannel()
 
-  channel.exchangeDeclare(exchange_name, "topic")
+  channel.exchangeDeclare(busOptions.exchange, "topic")
 
   val queueName = channel.queueDeclare().getQueue
-  channel.queueBind(queueName, exchange_name, "#")
+  channel.queueBind(queueName, busOptions.exchange, "#")
 
   actorSystem.actorOf(Props(new ListeningEventDispatchActor(channel))) ! Unit
 
-  def publish(event: BusEvent) = {
+  def publish(event: BusEvent, channel: Channel=this.channel) = {
     val raw = BusEvents.serialize(event, source = busOptions.source)
-    println("OUT: " + raw)
-    channel.basicPublish(exchange_name, event.eventIdentifier, false, null, raw.getBytes)
+    if (busOptions.debug) println("Debug: Bus Out: " + raw)
+    channel.basicPublish(busOptions.exchange, event.eventIdentifier, false, null, raw.getBytes)
   }
 
   def close() = {
@@ -67,14 +65,15 @@ class Bus(busOptions: BusOptions, actorSystem: ActorSystem, pm: PluginManager) {
           }
 
           def deserializeAndSend(raw_event: String) = {
-            println("IN: " + raw_event)
+            if (busOptions.debug) println("Debug: Bus In: " + raw_event)
             var event: BusEvent = null
             try {
               event = BusEvents.deserialize(raw_event)
             } catch {
+              case e: NoSuchTypeException => if (busOptions.debug) println("Debug: Event type " + e.event_type + " has not been registered. Ignoring.")
               case e: Exception => e.printStackTrace()
             }
-            println(event)
+            if (busOptions.debug) println("Debug: Event In: " + event)
             pm.callEvent(event)
           }
         })) ! msg
