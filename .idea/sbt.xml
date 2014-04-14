@@ -6,10 +6,11 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="C:\Users\HansiHE\IdeaProjects\Junction-API" />
-            <option value="C:\Users\HansiHE\IdeaProjects\Junction-API/project" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/project" />
           </set>
         </option>
+        <option name="useAutoImport" value="true" />
       </SbtProjectSettings>
     </option>
   </component>
