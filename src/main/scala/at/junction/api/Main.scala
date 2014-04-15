@@ -58,18 +58,12 @@ class Main extends ScalaPlugin with ListenersPlugin {
   }
 
   override def onDisable = {
+    super.onDisable()
 
     messageBus.publish(ServerStopBusEvent())
     messageBus.close()
 
-    //actorSystem.shutdown()
-
-    super.onDisable()
-
-    //messageBus.publish(ServerStopBusEvent())
-    //messageBus.close()
-
-    //actorSystem.shutdown()
+    actorSystem.shutdown()
   }
 
   def registerEvents() = {
