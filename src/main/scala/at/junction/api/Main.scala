@@ -6,7 +6,7 @@ import at.junction.api.bus.{BusOptions, BusEvents, Bus}
 import org.bukkit.event.{EventHandler, Listener}
 import at.junction.api.bus.events._
 import akka.actor.ActorSystem
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{Config, ConfigFactory}
 
 //import at.junction.api.bus.events.PlayerJoinEvent
 
@@ -17,8 +17,8 @@ import com.typesafe.config.ConfigFactory
  */
 class Main extends ScalaPlugin with ListenersPlugin {
 
-  val akkaConfig = ConfigFactory.load(getClassLoader)
-  val actorSystem = ActorSystem("JunctionAPI", akkaConfig, getClassLoader)
+  var akkaConfig: Config = null
+  var actorSystem: ActorSystem = null
 
   var restApi: RestApi = null
   var messageBus: Bus = null
@@ -28,6 +28,9 @@ class Main extends ScalaPlugin with ListenersPlugin {
   override def onEnable = {
     super.onEnable()
     this.saveDefaultConfig()
+
+    akkaConfig = ConfigFactory.load(getClassLoader)
+    actorSystem = ActorSystem("JunctionAPI", akkaConfig, getClassLoader)
 
     serverId = getConfig.getString("server-revision-id")
 
@@ -44,17 +47,39 @@ class Main extends ScalaPlugin with ListenersPlugin {
         serverId,
         getConfig.getBoolean("bus-debug")),
       actorSystem, this.pluginManager)
+
+    getServer.getScheduler.runTaskTimerAsynchronously(this, new Runnable {
+      def run() = {
+        messageBus.publish(ServerHeartbeatBusEvent())
+      }
+    }, 0, 20 * 5)
+
+    messageBus.publish(ServerStartBusEvent())
   }
 
   override def onDisable = {
+
+    messageBus.publish(ServerStopBusEvent())
+    messageBus.close()
+
+    //actorSystem.shutdown()
+
     super.onDisable()
+
+    //messageBus.publish(ServerStopBusEvent())
     //messageBus.close()
+
+    //actorSystem.shutdown()
   }
 
   def registerEvents() = {
     PlayerJoinBusEventMarshaller.register()
     PlayerQuitBusEventMarshaller.register()
     PlayerChatBusEventMarshaller.register()
+
+    ServerHeartbeatBusEventMarshaller.register()
+    ServerStartBusEventMarshaller.register()
+    ServerStopBusEventMarshaller.register()
   }
 
   def listeners: List[Listener] = List(
