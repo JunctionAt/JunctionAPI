@@ -9,29 +9,33 @@ import org.json4s.JsonAST._
  * Date: 3/2/14
  * Time: 1:27 AM
  */
-class RestApi(apiUrl: String, apiKey: String, serverId: String) {
+class RestApi(val apiUrl: String, val apiKey: String, val serverId: String) {
 
   val alts = new AltApi(this)
   val bans = new BansApi(this)
 
   def getServer: String = serverId
 
+  def formatResource(resource: String) = {
+    apiUrl + resource
+  }
+
+}
+
+abstract class ApiModule(restApi: RestApi) extends JsonFields {
+
   def request(method: String, url: String, asUser: String = null): Http.Request = {
     val reqFunc: Http.HttpExec = (req, conn) => conn.connect()
-    val request = Http.Request(reqFunc, Http.appendQsHttpUrl(url), method).header("ApiKey", apiKey)
+    val request = Http.Request(reqFunc, Http.appendQsHttpUrl(url), method).header("ApiKey", restApi.apiKey)
     if (asUser != null)
       request.header("AsUser", asUser)
     request
   }
 
-  def formatResource(resource: String) = {
-    apiUrl + resource
-  }
-
-  def get(resource: String, asUser: String = null): Http.Request = request("GET", formatResource(resource), asUser)
-  def post(resource: String, asUser: String = null): Http.Request = request("POST", formatResource(resource), asUser)
-  def put(resource: String, asUser: String = null): Http.Request = request("PUT", formatResource(resource), asUser)
-  def delete(resource: String, asUser: String = null): Http.Request = request("DELETE", formatResource(resource), asUser)
+  def GET(resource: String, asUser: String = null): Http.Request = request("GET", restApi.formatResource(resource), asUser)
+  def POST(resource: String, asUser: String = null): Http.Request = request("POST", restApi.formatResource(resource), asUser)
+  def PUT(resource: String, asUser: String = null): Http.Request = request("PUT", restApi.formatResource(resource), asUser)
+  def DELETE(resource: String, asUser: String = null): Http.Request = request("DELETE", restApi.formatResource(resource), asUser)
 
   class ApiError(e: String) extends Exception(e)
 
