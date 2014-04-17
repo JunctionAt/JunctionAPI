@@ -1,0 +1,1 @@
+see https://gitlab.com/junction-minecraft/junctionapi/wikis/bus-doc for documentation on bus messages
