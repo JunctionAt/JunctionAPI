@@ -1,6 +1,7 @@
 package at.junction.api.rest
 
 import java.util.Date
+import java.util.UUID
 
 /**
  * User: HansiHE
@@ -15,12 +16,13 @@ class BansApi(api: RestApi) extends ApiModule(api) {
   }
   import BanStatus._
 
-  case class Ban(id: Integer, issuer: String, username: String, reason: String, server: String,
+  case class Ban(id: Integer, issuer: String, uuid: String, username: String, reason: String, server: String,
             time: Date = null, active: Boolean, remove_time: Date = null, remove_user: String, source: String)
 
-  case class Note(id: Integer, issuer: String, username: String, server: String,
+  case class Note(id: Integer, issuer: String, uuid: String, username: String, server: String,
              time: Date = null, active: Boolean, note: String)
 
+  @Deprecated
   def getBans(username: String, active: BanStatus) = {
     val request = GET("/anathema/bans")
       .param("username", username)
@@ -36,6 +38,22 @@ class BansApi(api: RestApi) extends ApiModule(api) {
     (json \ "bans").extract[List[Ban]]
   }
 
+  def getBans(uuid: UUID, active: BanStatus) = {
+    val request = GET("/anathema/bans")
+    .param("uuid", uuid.toString)
+    .param("scope", "local")
+    .param("active", active match {
+      case Both => "none"
+      case Active => "true"
+      case Inactive => "false"
+    })
+
+    val json = parseApiResponse(request.toString)
+
+    (json \ "bans").extract[List[Ban]]
+  }
+
+  @Deprecated
   def getNotes(username: String, active: BanStatus) = {
     val request = GET("/anathema/notes")
       .param("username", username)
@@ -51,6 +69,22 @@ class BansApi(api: RestApi) extends ApiModule(api) {
     (json \ "notes").extract[List[Note]]
   }
 
+  def getNotes(uuid: UUID, active: BanStatus) = {
+    val request = GET("/anathema/notes")
+      .param("uuid", uuid.toString)
+      .param("scope", "local")
+      .param("active", active match {
+      case Both => "none"
+      case Active => "true"
+      case Inactive => "false"
+    })
+
+    val json = parseApiResponse(request.toString)
+
+    (json \ "notes").extract[List[Note]]
+  }
+
+  @Deprecated
   def addNote(username: String, issuer: String, message: String) = {
     val request = POST("/anathema/notes", asUser = issuer)
       .param("server", api.getServer)
@@ -60,10 +94,30 @@ class BansApi(api: RestApi) extends ApiModule(api) {
     val json = parseApiResponse(request.toString)
   }
 
+
+  def addNote(uuid: UUID, issuer: String, message: String) = {
+    val request = POST("/anathema/notes", asUser = issuer)
+      .param("server", api.getServer)
+      .param("uuid", uuid.toString)
+      .param("note", message)
+
+    val json = parseApiResponse(request.toString)
+  }
+
+  @Deprecated
   def addBan(username: String, issuer: String, reason: String) = {
     val request = POST("/anathema/bans", asUser = issuer)
       .param("server", api.getServer)
       .param("username", username)
+      .param("reason", reason)
+
+    val json = parseApiResponse(request.toString)
+  }
+
+  def addBan(uuid: UUID, issuer: String, reason: String) = {
+    val request = POST("/anathema/bans", asUser = issuer)
+      .param("server", api.getServer)
+      .param("uuid", uuid.toString)
       .param("reason", reason)
 
     val json = parseApiResponse(request.toString)
@@ -76,11 +130,20 @@ class BansApi(api: RestApi) extends ApiModule(api) {
     val json = parseApiResponse(request.toString)
   }
 
+  @Deprecated
   def delBan(username: String, issuer: String) = {
     val request = DELETE("/anathema/bans", asUser = issuer)
       .param("username", username)
 
     val json = parseApiResponse(request.toString)
   }
+
+  def delBan(uuid: UUID, issuer: String) = {
+    val request = DELETE("/anathema/bans", asUser = issuer)
+      .param("uuid", uuid.toString)
+
+    val json = parseApiResponse(request.toString)
+  }
+
 
 }
