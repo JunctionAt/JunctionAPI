@@ -3,6 +3,7 @@ package at.junction.api.rest
 import scalaj.http.{HttpException, Http}
 import org.json4s.native.JsonMethods._
 import org.json4s.JsonAST._
+import at.junction.api.fields.PlayerIdentifier
 
 /**
  * User: HansiHE
@@ -24,18 +25,24 @@ class RestApi(val apiUrl: String, val apiKey: String, val serverId: String) {
 
 abstract class ApiModule(restApi: RestApi) extends JsonFields {
 
-  def request(method: String, url: String, asUser: String = null): Http.Request = {
+  def request(method: String, url: String, asUser: String = null, asPlayer: PlayerIdentifier = null): Http.Request = {
     val reqFunc: Http.HttpExec = (req, conn) => conn.connect()
     val request = Http.Request(reqFunc, Http.appendQsHttpUrl(url), method).header("ApiKey", restApi.apiKey)
     if (asUser != null)
       request.header("AsUser", asUser)
+    if (asPlayer != null)
+      request.header("AsPlayer", asPlayer.mojangUUID)
     request
   }
 
-  def GET(resource: String, asUser: String = null): Http.Request = request("GET", restApi.formatResource(resource), asUser)
-  def POST(resource: String, asUser: String = null): Http.Request = request("POST", restApi.formatResource(resource), asUser)
-  def PUT(resource: String, asUser: String = null): Http.Request = request("PUT", restApi.formatResource(resource), asUser)
-  def DELETE(resource: String, asUser: String = null): Http.Request = request("DELETE", restApi.formatResource(resource), asUser)
+  def GET(resource: String, asUser: String = null, asPlayer: PlayerIdentifier = null): Http.Request =
+    request("GET", restApi.formatResource(resource), asUser, asPlayer)
+  def POST(resource: String, asUser: String = null, asPlayer: PlayerIdentifier = null): Http.Request =
+    request("POST", restApi.formatResource(resource), asUser, asPlayer)
+  def PUT(resource: String, asUser: String = null, asPlayer: PlayerIdentifier = null): Http.Request =
+    request("PUT", restApi.formatResource(resource), asUser, asPlayer)
+  def DELETE(resource: String, asUser: String = null, asPlayer: PlayerIdentifier = null): Http.Request =
+    request("DELETE", restApi.formatResource(resource), asUser, asPlayer)
 
   class ApiError(e: String) extends Exception(e)
 

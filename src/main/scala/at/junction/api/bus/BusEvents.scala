@@ -8,7 +8,7 @@ import org.json4s.native.Serialization.write
 import org.json4s.JsonDSL._
 import at.junction.api.bus.events.{PlayerJoinBusEventMarshaller, PlayerJoinBusEvent}
 import java.util.NoSuchElementException
-import at.junction.api.bus.serializers.UUIDSerializer
+import at.junction.api.serializers.UUIDSerializer
 
 object BusEvents {
   val types = mutable.Map[String, EventMarshaller]()
@@ -49,7 +49,7 @@ trait EventMarshaller {
    *  * serialize(input: BusEvent): JValue
    *  * register()
    */
-  implicit var formats: Formats = org.json4s.DefaultFormats + new UUIDSerializer
+  implicit var formats: Formats = org.json4s.DefaultFormats + UUIDSerializer
   def deserialize(input: JValue): BusEvent
   def serialize(input: BusEvent): JValue
   def register()

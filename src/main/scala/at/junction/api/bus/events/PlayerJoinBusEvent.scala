@@ -2,7 +2,7 @@ package at.junction.api.bus.events
 
 import at.junction.api.bus._
 import org.bukkit.event.HandlerList
-import at.junction.api.bus.fields.PlayerState
+import at.junction.api.fields.PlayerState
 import org.bukkit.entity.Player
 
 case class PlayerJoinBusEvent(server: String, player: PlayerState) extends BusEvent {

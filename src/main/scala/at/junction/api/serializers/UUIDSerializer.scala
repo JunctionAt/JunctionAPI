@@ -1,8 +1,13 @@
-package at.junction.api.bus.serializers
+package at.junction.api.serializers
 
 import org.json4s._
 import org.json4s.JsonDSL._
 import java.util.UUID
+
+object UUIDImplicits {
+  implicit def UUID2String(uuid: UUID): String = MojangUUID.UUID2MojangUUID(uuid)
+  implicit def String2UUID(uuid: String): UUID = MojangUUID.MojangUUID2UUID(uuid)
+}
 
 object MojangUUID {
   def UUID2MojangUUID(uuid: UUID): String = { // D:
@@ -23,7 +28,7 @@ object MojangUUID {
   }
 }
 
-class UUIDSerializer extends Serializer[UUID]{
+object UUIDSerializer extends Serializer[UUID]{
   val UUIDClass = classOf[UUID]
 
   def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {

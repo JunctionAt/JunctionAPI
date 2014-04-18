@@ -1,7 +1,7 @@
 package at.junction.api.rest
 
-import java.util.Date
-import java.util.UUID
+2import java.util.Date
+import at.junction.api.fields.PlayerIdentifier
 
 /**
  * User: HansiHE
@@ -16,11 +16,12 @@ class BansApi(api: RestApi) extends ApiModule(api) {
   }
   import BanStatus._
 
-  case class Ban(id: Integer, issuer: String, uuid: String, username: String, reason: String, server: String,
-            time: Date = null, active: Boolean, remove_time: Date = null, remove_user: String, source: String)
+  case class Ban(id: Integer, issuer: PlayerIdentifier, target: PlayerIdentifier, reason: String,
+              server: String, time: Date = null, active: Boolean, remove_time: Date = null, remove_user: String,
+              source: String)
 
-  case class Note(id: Integer, issuer: String, uuid: String, username: String, server: String,
-             time: Date = null, active: Boolean, note: String)
+  case class Note(id: Integer, issuer: PlayerIdentifier, target: PlayerIdentifier, server: String,
+              time: Date = null, active: Boolean, note: String)
 
   @Deprecated
   def getBans(username: String, active: BanStatus) = {
@@ -38,9 +39,9 @@ class BansApi(api: RestApi) extends ApiModule(api) {
     (json \ "bans").extract[List[Ban]]
   }
 
-  def getBans(uuid: UUID, active: BanStatus) = {
+  def getBans(target: PlayerIdentifier, active: BanStatus = Active) = {
     val request = GET("/anathema/bans")
-    .param("uuid", uuid.toString)
+    .param("uuid", target.mojangUUID)
     .param("scope", "local")
     .param("active", active match {
       case Both => "none"
@@ -69,9 +70,9 @@ class BansApi(api: RestApi) extends ApiModule(api) {
     (json \ "notes").extract[List[Note]]
   }
 
-  def getNotes(uuid: UUID, active: BanStatus) = {
+  def getNotes(target: PlayerIdentifier, active: BanStatus) = {
     val request = GET("/anathema/notes")
-      .param("uuid", uuid.toString)
+      .param("uuid", target.mojangUUID)
       .param("scope", "local")
       .param("active", active match {
       case Both => "none"
@@ -95,10 +96,10 @@ class BansApi(api: RestApi) extends ApiModule(api) {
   }
 
 
-  def addNote(uuid: UUID, issuer: String, message: String) = {
-    val request = POST("/anathema/notes", asUser = issuer)
+  def addNote(target: PlayerIdentifier, issuer: PlayerIdentifier, message: String) = {
+    val request = POST("/anathema/notes", asPlayer = issuer)
       .param("server", api.getServer)
-      .param("uuid", uuid.toString)
+      .param("uuid", target.mojangUUID)
       .param("note", message)
 
     val json = parseApiResponse(request.toString)
@@ -114,17 +115,17 @@ class BansApi(api: RestApi) extends ApiModule(api) {
     val json = parseApiResponse(request.toString)
   }
 
-  def addBan(uuid: UUID, issuer: String, reason: String) = {
-    val request = POST("/anathema/bans", asUser = issuer)
+  def addBan(target: PlayerIdentifier, issuer: PlayerIdentifier, reason: String) = {
+    val request = POST("/anathema/bans", asPlayer = issuer)
       .param("server", api.getServer)
-      .param("uuid", uuid.toString)
+      .param("uuid", target.mojangUUID)
       .param("reason", reason)
 
     val json = parseApiResponse(request.toString)
   }
 
-  def delNote(id: Integer, issuer: String) = {
-    val request = DELETE("/anathema/notes", asUser = issuer)
+  def delNote(id: Integer, issuer: PlayerIdentifier) = {
+    val request = DELETE("/anathema/notes", asPlayer = issuer)
       .param("id", id.toString)
 
     val json = parseApiResponse(request.toString)
@@ -138,12 +139,11 @@ class BansApi(api: RestApi) extends ApiModule(api) {
     val json = parseApiResponse(request.toString)
   }
 
-  def delBan(uuid: UUID, issuer: String) = {
-    val request = DELETE("/anathema/bans", asUser = issuer)
-      .param("uuid", uuid.toString)
+  def delBan(target: PlayerIdentifier, issuer: PlayerIdentifier) = {
+    val request = DELETE("/anathema/bans", asPlayer = issuer)
+      .param("uuid", target.mojangUUID)
 
     val json = parseApiResponse(request.toString)
   }
-
 
 }
