@@ -8,6 +8,8 @@ organization := "Junction"
 
 resolvers += "Bukkit" at "http://repo.bukkit.org/content/groups/public/"
 
+publishTo := Some(Resolver.file("file", new File("/var/lib/jenkins/maven-repository")) )
+
 libraryDependencies ++= Seq(
   "javax.servlet" % "servlet-api" % "2.5",
   "org.bukkit" % "bukkit" % "1.7.8-R0.1-SNAPSHOT" % "provided",
