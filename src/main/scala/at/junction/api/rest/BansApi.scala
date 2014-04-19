@@ -1,6 +1,6 @@
 package at.junction.api.rest
 
-2import java.util.Date
+import java.util.Date
 import at.junction.api.fields.PlayerIdentifier
 
 /**
