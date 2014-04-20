@@ -32,6 +32,8 @@ class BansApi(api: RestApi) extends ApiModule(api) {
         case BanStatus.Inactive => "false"
       })
 
+    println(request.toString)
+
     val json = parseApiResponse(request.toString)
 
     (json \ "bans").extract[List[Ban]]
@@ -46,6 +48,8 @@ class BansApi(api: RestApi) extends ApiModule(api) {
       case BanStatus.Active => "true"
       case BanStatus.Inactive => "false"
     })
+
+    println(request.toString)
 
     val json = parseApiResponse(request.toString)
 
@@ -63,6 +67,8 @@ class BansApi(api: RestApi) extends ApiModule(api) {
         case BanStatus.Inactive => "false"
       })
 
+    println(request.toString)
+
     val json = parseApiResponse(request.toString)
 
     (json \ "notes").extract[List[Note]]
@@ -78,6 +84,8 @@ class BansApi(api: RestApi) extends ApiModule(api) {
       case BanStatus.Inactive => "false"
     })
 
+    println(request.toString)
+
     val json = parseApiResponse(request.toString)
 
     (json \ "notes").extract[List[Note]]
@@ -90,6 +98,8 @@ class BansApi(api: RestApi) extends ApiModule(api) {
       .param("username", username)
       .param("note", message)
 
+    println(request.toString)
+
     val json = parseApiResponse(request.toString)
   }
 
@@ -99,6 +109,8 @@ class BansApi(api: RestApi) extends ApiModule(api) {
       .param("server", api.getServer)
       .param("uuid", target.mojangUUID)
       .param("note", message)
+
+    println(request.toString)
 
     val json = parseApiResponse(request.toString)
   }
@@ -110,6 +122,8 @@ class BansApi(api: RestApi) extends ApiModule(api) {
       .param("username", username)
       .param("reason", reason)
 
+    println(request.toString)
+
     val json = parseApiResponse(request.toString)
   }
 
@@ -118,6 +132,8 @@ class BansApi(api: RestApi) extends ApiModule(api) {
       .param("server", api.getServer)
       .param("uuid", target.mojangUUID)
       .param("reason", reason)
+
+    println(request.toString)
 
     val json = parseApiResponse(request.toString)
   }
@@ -134,12 +150,16 @@ class BansApi(api: RestApi) extends ApiModule(api) {
     val request = DELETE("/anathema/bans", asUser = issuer)
       .param("username", username)
 
+    println(request.toString)
+
     val json = parseApiResponse(request.toString)
   }
 
   def delBan(target: PlayerIdentifier, issuer: PlayerIdentifier) = {
     val request = DELETE("/anathema/bans", asPlayer = issuer)
       .param("uuid", target.mojangUUID)
+
+    println(request.toString)
 
     val json = parseApiResponse(request.toString)
   }
