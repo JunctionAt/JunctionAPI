@@ -20,9 +20,7 @@ class AltApi(api: RestApi) extends ApiModule(api) {
     val request = GET("/anathema/alts")
       .param("uuid", target.mojangUUID)
 
-    println(request.toString)
-
-    val json = parseApiResponse(request.toString)
+    val json = parseApiResponse(request.asString)
 
     (json \ "alts").extract[List[Alt]]
   }
@@ -37,7 +35,7 @@ class AltApi(api: RestApi) extends ApiModule(api) {
       .param("uuid", target.mojangUUID)
       .param("allowed", allowed.toString)
 
-    val json = parseApiResponse(request.toString)
+    val json = parseApiResponse(request.asString)
   }
 
 }
