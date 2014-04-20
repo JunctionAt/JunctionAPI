@@ -2,6 +2,9 @@ package at.junction.api.rest
 
 import java.util.Date
 import at.junction.api.fields.PlayerIdentifier
+import java.util
+import scala.collection.JavaConversions._
+
 
 /**
  * User: HansiHE
@@ -24,7 +27,7 @@ class BansApi(api: RestApi) extends ApiModule(api) {
               time: Date = null, active: Boolean, note: String)
 
   @Deprecated
-  def getBans(username: String, active: BanStatus) = {
+  def getBans(username: String, active: BanStatus): util.List[Ban] = {
     val request = GET("/anathema/bans")
       .param("username", username)
       .param("scope", "local")
@@ -39,7 +42,7 @@ class BansApi(api: RestApi) extends ApiModule(api) {
     (json \ "bans").extract[List[Ban]]
   }
 
-  def getBans(target: PlayerIdentifier, active: BanStatus = Active) = {
+  def getBans(target: PlayerIdentifier, active: BanStatus = Active): util.List[Ban] = {
     val request = GET("/anathema/bans")
     .param("uuid", target.mojangUUID)
     .param("scope", "local")
@@ -55,7 +58,7 @@ class BansApi(api: RestApi) extends ApiModule(api) {
   }
 
   @Deprecated
-  def getNotes(username: String, active: BanStatus) = {
+  def getNotes(username: String, active: BanStatus): util.List[Note] = {
     val request = GET("/anathema/notes")
       .param("username", username)
       .param("scope", "local")
@@ -70,7 +73,7 @@ class BansApi(api: RestApi) extends ApiModule(api) {
     (json \ "notes").extract[List[Note]]
   }
 
-  def getNotes(target: PlayerIdentifier, active: BanStatus) = {
+  def getNotes(target: PlayerIdentifier, active: BanStatus): util.List[Note] = {
     val request = GET("/anathema/notes")
       .param("uuid", target.mojangUUID)
       .param("scope", "local")
