@@ -4,6 +4,7 @@ import java.util.Date
 import at.junction.api.fields.PlayerIdentifier
 import java.util
 import scala.collection.JavaConversions._
+import at.junction.api.BanStatus
 
 
 /**
@@ -12,12 +13,6 @@ import scala.collection.JavaConversions._
  * Time: 3:14 AM
  */
 class BansApi(api: RestApi) extends ApiModule(api) {
-
-  object BanStatus extends Enumeration {
-    type BanStatus = Value
-    val Both, Active, Inactive = Value
-  }
-  import BanStatus._
 
   case class Ban(id: Integer, issuer: PlayerIdentifier, target: PlayerIdentifier, reason: String,
               server: String, time: Date = null, active: Boolean, remove_time: Date = null, remove_user: String,
@@ -32,9 +27,9 @@ class BansApi(api: RestApi) extends ApiModule(api) {
       .param("username", username)
       .param("scope", "local")
       .param("active", active match {
-        case Both => "none"
-        case Active => "true"
-        case Inactive => "false"
+        case BanStatus.Both => "none"
+        case BanStatus.Active => "true"
+        case BanStatus.Inactive => "false"
       })
 
     val json = parseApiResponse(request.toString)
@@ -42,14 +37,14 @@ class BansApi(api: RestApi) extends ApiModule(api) {
     (json \ "bans").extract[List[Ban]]
   }
 
-  def getBans(target: PlayerIdentifier, active: BanStatus = Active): util.List[Ban] = {
+  def getBans(target: PlayerIdentifier, active: BanStatus = BanStatus.Active): util.List[Ban] = {
     val request = GET("/anathema/bans")
     .param("uuid", target.mojangUUID)
     .param("scope", "local")
     .param("active", active match {
-      case Both => "none"
-      case Active => "true"
-      case Inactive => "false"
+      case BanStatus.Both => "none"
+      case BanStatus.Active => "true"
+      case BanStatus.Inactive => "false"
     })
 
     val json = parseApiResponse(request.toString)
@@ -63,9 +58,9 @@ class BansApi(api: RestApi) extends ApiModule(api) {
       .param("username", username)
       .param("scope", "local")
       .param("active", active match {
-        case Both => "none"
-        case Active => "true"
-        case Inactive => "false"
+        case BanStatus.Both => "none"
+        case BanStatus.Active => "true"
+        case BanStatus.Inactive => "false"
       })
 
     val json = parseApiResponse(request.toString)
@@ -78,9 +73,9 @@ class BansApi(api: RestApi) extends ApiModule(api) {
       .param("uuid", target.mojangUUID)
       .param("scope", "local")
       .param("active", active match {
-      case Both => "none"
-      case Active => "true"
-      case Inactive => "false"
+      case BanStatus.Both => "none"
+      case BanStatus.Active => "true"
+      case BanStatus.Inactive => "false"
     })
 
     val json = parseApiResponse(request.toString)
