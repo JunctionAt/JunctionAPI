@@ -14,6 +14,7 @@ class RestApi(val apiUrl: String, val apiKey: String, val serverId: String) {
 
   val alts = new AltApi(this)
   val bans = new BansApi(this)
+  val uuid = new UUIDApi(this)
 
   def getServer: String = serverId
 
