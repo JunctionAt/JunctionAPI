@@ -1,6 +1,6 @@
 package at.junction.api.rest
 
-import scalaj.http.{HttpException, Http}
+import scalaj.http.Http
 import org.json4s.native.JsonMethods._
 import org.json4s.JsonAST._
 import at.junction.api.fields.PlayerIdentifier
@@ -14,7 +14,7 @@ class RestApi(val apiUrl: String, val apiKey: String, val serverId: String) {
 
   val alts = new AltApi(this)
   val bans = new BansApi(this)
-  val uuid = new UUIDApi(this)
+  val players = new PlayersApi()(this)
 
   def getServer: String = serverId
 

@@ -4,7 +4,7 @@ import java.util.UUID
 import at.junction.api.fields.PlayerIdentifier
 import at.junction.api.serializers.UUIDImplicits._
 
-class UUIDApi(api: RestApi) extends ApiModule(api) {
+class PlayersApi(api: RestApi) extends ApiModule(api) {
 
   def getPlayer(uuid: UUID = null, name: String = null): PlayerIdentifier = {
     val request = GET("/uuid")
