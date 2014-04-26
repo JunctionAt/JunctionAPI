@@ -7,11 +7,11 @@ import at.junction.api.serializers.UUIDImplicits._
 class PlayersApi(api: RestApi) extends ApiModule(api) {
 
   def getPlayer(uuid: UUID = null, name: String = null): PlayerIdentifier = {
-    val request = GET("/uuid")
+    var request = GET("/uuid")
 
     if(uuid == null && name == null) throw new ApiError("getPlayer called with both uuid and username as null. Please supply at least one.")
-    if(uuid != null) request.param("uuid", uuid)
-    if(name != null) request.param("name", name)
+    if(uuid != null) request = request.param("uuid", uuid)
+    if(name != null) request = request.param("name", name)
 
     val json = parseApiResponse(request.asString)
 
