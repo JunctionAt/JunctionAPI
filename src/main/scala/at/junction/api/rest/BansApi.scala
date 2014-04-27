@@ -6,6 +6,12 @@ import java.util
 import scala.collection.JavaConversions._
 import at.junction.api.BanStatus
 
+case class Ban(id: Integer, issuer: PlayerIdentifier, target: PlayerIdentifier, reason: String,
+               server: String, time: Date = null, active: Boolean, remove_time: Date = null, remove_user: String,
+               source: String)
+
+case class Note(id: Integer, issuer: PlayerIdentifier, target: PlayerIdentifier, server: String,
+                time: Date = null, active: Boolean, note: String)
 
 /**
  * User: HansiHE
@@ -13,14 +19,6 @@ import at.junction.api.BanStatus
  * Time: 3:14 AM
  */
 class BansApi(api: RestApi) extends ApiModule(api) {
-
-  case class Ban(id: Integer, issuer: PlayerIdentifier, target: PlayerIdentifier, reason: String,
-              server: String, time: Date = null, active: Boolean, remove_time: Date = null, remove_user: String,
-              source: String)
-
-  case class Note(id: Integer, issuer: PlayerIdentifier, target: PlayerIdentifier, server: String,
-              time: Date = null, active: Boolean, note: String)
-
 
   def getBans(target: PlayerIdentifier, active: BanStatus = BanStatus.Active): util.List[Ban] = {
     val request = GET("/anathema/bans")
