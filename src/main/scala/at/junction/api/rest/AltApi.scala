@@ -5,6 +5,7 @@ import scala.throws
 import at.junction.api.fields.PlayerIdentifier
 import java.util
 import scala.collection.JavaConversions._
+import java.util.UUID
 
 /**
  * User: HansiHE
@@ -12,7 +13,7 @@ import scala.collection.JavaConversions._
  * Time: 1:47 AM
  */
 
-case class Alt(alt: String, last_login: String)
+case class Alt(player: PlayerIdentifier, last_login: String)
 
 class AltApi(api: RestApi) extends ApiModule(api) {
 
