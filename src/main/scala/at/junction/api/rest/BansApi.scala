@@ -6,12 +6,12 @@ import java.util
 import scala.collection.JavaConversions._
 import at.junction.api.BanStatus
 
-case class Ban(id: Integer, issuer: PlayerIdentifier, target: PlayerIdentifier, reason: String,
-               server: String, time: Date = null, active: Boolean, remove_time: Date = null, remove_user: String,
+case class Ban(id: Integer, issuer: String, target: PlayerIdentifier, reason: String,
+               server: String, time: Date, active: Boolean,
                source: String)
 
-case class Note(id: Integer, issuer: PlayerIdentifier, target: PlayerIdentifier, server: String,
-                time: Date = null, active: Boolean, note: String)
+case class Note(id: Integer, issuer: String, target: PlayerIdentifier, server: String,
+                time: Date, active: Boolean, note: String)
 
 /**
  * User: HansiHE
