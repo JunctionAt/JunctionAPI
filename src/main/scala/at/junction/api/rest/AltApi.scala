@@ -11,9 +11,10 @@ import scala.collection.JavaConversions._
  * Date: 3/2/14
  * Time: 1:47 AM
  */
-class AltApi(api: RestApi) extends ApiModule(api) {
 
-  case class Alt(alt: String, last_login: String)
+case class Alt(alt: String, last_login: String)
+
+class AltApi(api: RestApi) extends ApiModule(api) {
 
   @throws(classOf[ApiError])
   def getAlts(target: PlayerIdentifier): util.List[Alt] = {
