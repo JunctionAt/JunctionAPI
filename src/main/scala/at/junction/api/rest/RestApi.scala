@@ -1,6 +1,6 @@
 package at.junction.api.rest
 
-import scalaj.http.Http
+import scalaj.http.{HttpOptions, Http}
 import org.json4s.native.JsonMethods._
 import org.json4s.JsonAST._
 import at.junction.api.fields.PlayerIdentifier
@@ -28,7 +28,7 @@ abstract class ApiModule(restApi: RestApi) extends JsonFields {
 
   def request(method: String, url: String, asUser: String = null, asPlayer: PlayerIdentifier = null): Http.Request = {
     val reqFunc: Http.HttpExec = (req, conn) => conn.connect()
-    val request = Http.Request(reqFunc, Http.appendQsHttpUrl(url), method).header("ApiKey", restApi.apiKey)
+    val request = Http.Request(reqFunc, Http.appendQsHttpUrl(url), method).option(HttpOptions.readTimeout(3000)).header("ApiKey", restApi.apiKey)
     if (asUser != null)
       request.header("AsUser", asUser)
     if (asPlayer != null)
