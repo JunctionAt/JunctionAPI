@@ -30,9 +30,7 @@ class BansApi(api: RestApi) extends ApiModule(api) {
       case BanStatus.Inactive => "false"
     })
 
-    val res = request.asString
-    println("RES: " + res)
-    val json = parseApiResponse(res)
+    val json = parseApiResponse(request.asString)
 
     (json \ "bans").extract[List[Ban]]
   }
@@ -47,9 +45,7 @@ class BansApi(api: RestApi) extends ApiModule(api) {
       case BanStatus.Inactive => "false"
     })
 
-    val res = request.asString
-    println("RES: " + res)
-    val json = parseApiResponse(res)
+    val json = parseApiResponse(request.asString)
 
     (json \ "notes").extract[List[Note]]
   }
