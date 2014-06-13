@@ -28,11 +28,11 @@ abstract class ApiModule(restApi: RestApi) extends JsonFields {
 
   def request(method: String, url: String, asUser: String = null, asPlayer: PlayerIdentifier = null): Http.Request = {
     val reqFunc: Http.HttpExec = (req, conn) => conn.connect()
-    val request = Http.Request(reqFunc, Http.appendQsHttpUrl(url), method).option(HttpOptions.connTimeout(1000)).option(HttpOptions.readTimeout(5000)).header("ApiKey", restApi.apiKey)
+    var request = Http.Request(reqFunc, Http.appendQsHttpUrl(url), method).option(HttpOptions.connTimeout(1000)).option(HttpOptions.readTimeout(5000)).header("ApiKey", restApi.apiKey)
     if (asUser != null)
-      request.header("AsUser", asUser)
+      request = request.header("AsUser", asUser)
     if (asPlayer != null)
-      request.header("AsPlayer", asPlayer.mojangUUID)
+      request = request.header("AsPlayer", asPlayer.mojangUUID)
     request
   }
 
